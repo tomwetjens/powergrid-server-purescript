@@ -1,0 +1,21 @@
+{
+  "name": "purescript-quick-start",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "decimal.js": "^10.1.1",
+    "express": "^4.16.4",
+    "pg": "^7.10.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
