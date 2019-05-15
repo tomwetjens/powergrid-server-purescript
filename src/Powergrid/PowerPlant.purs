@@ -1,6 +1,10 @@
-module Powergrid.PowerPlant where
+module Powergrid.PowerPlant(
+  PowerPlant(..),
+  cost
+) where
 
 import Prelude
+
 import Data.Set (Set)
 import Powergrid.ResourceType (ResourceType)
 

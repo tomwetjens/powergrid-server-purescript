@@ -6,7 +6,8 @@ module Powergrid.ResourceMarket (
   newUraniumResourceMarket, 
   available, 
   cost, 
-  capacity) where
+  capacity
+) where
 
 import Prelude
 

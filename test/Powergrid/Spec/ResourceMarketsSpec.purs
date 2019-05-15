@@ -3,7 +3,7 @@ module Powergrid.Spec.ResourceMarketsSpec(resourceMarketsSpec) where
 import Prelude
 
 import Powergrid.ResourceType (ResourceType(..))
-import Powergrid.ResourceMarkets (newResourceMarkets, availableRT, capacityRT)
+import Powergrid.ResourceMarkets (newResourceMarkets, available, capacity)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 
@@ -15,13 +15,13 @@ resourceMarketsSpec = do
 
     describe "newResourceMarkets" do 
       it "available" do   
-        availableRT Coal markets `shouldEqual` 24
-        availableRT Oil markets `shouldEqual` 18
-        availableRT BioMass markets `shouldEqual` 6
-        availableRT Uranium markets `shouldEqual` 2
+        available Coal markets `shouldEqual` 24
+        available Oil markets `shouldEqual` 18
+        available BioMass markets `shouldEqual` 6
+        available Uranium markets `shouldEqual` 2
 
       it "capacity" do   
-        capacityRT Coal markets `shouldEqual` 24
-        capacityRT Oil markets `shouldEqual` 24
-        capacityRT BioMass markets `shouldEqual` 24
-        capacityRT Uranium markets `shouldEqual` 12
+        capacity Coal markets `shouldEqual` 24
+        capacity Oil markets `shouldEqual` 24
+        capacity BioMass markets `shouldEqual` 24
+        capacity Uranium markets `shouldEqual` 12

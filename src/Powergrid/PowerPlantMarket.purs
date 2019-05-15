@@ -10,6 +10,7 @@ module Powergrid.PowerPlantMarket (
 ) where
 
 import Prelude
+
 import Data.List (List(..), (:), delete, drop, elem, filter, last, singleton, sort, take)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)

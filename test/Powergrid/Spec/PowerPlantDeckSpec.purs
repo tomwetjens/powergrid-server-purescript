@@ -3,13 +3,17 @@ module Powergrid.Spec.PowerPlantDeckSpec(powerPlantDeckSpec) where
 import Prelude
 
 import Data.Foldable (class Foldable, any)
+import Data.List (List)
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
-import Powergrid.PowerPlantDeck (newPowerPlantDeck, onTop, toList, remaining)
+import Powergrid.PowerPlantDeck (PowerPlantDeck(..), newPowerPlantDeck, onTop, remaining)
 import Powergrid.PowerPlant (PowerPlant(..), cost)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
+
+toList :: PowerPlantDeck -> List PowerPlant
+toList (PowerPlantDeck ps) = ps  
 
 checkCost :: PowerPlant -> Int -> Aff Unit
 checkCost (PowerPlant p) cost = p.cost `shouldEqual` cost

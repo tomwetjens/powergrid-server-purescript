@@ -1,22 +1,29 @@
-module Powergrid.PowerPlantDeck where
+module Powergrid.PowerPlantDeck(
+  PowerPlantDeck(..),
+  draw,
+  putBack,
+  onTop,
+  remaining,
+  shuffleDeck,
+  defaultPowerPlants,
+  newPowerPlantDeck
+) where
 
 import Prelude
+
 import Data.List (List(Nil), (:), filter, drop, length, snoc)
 import Data.Maybe (Maybe(..))
 import Data.Set (singleton, union)
 import Effect (Effect)
 import Powergrid.PowerPlant (PowerPlant(..))
 import Powergrid.ResourceType (ResourceType(..))
-import Powergrid.Util.Shuffle (shuffle)
 import Powergrid.Util.List ((++))
+import Powergrid.Util.Shuffle (shuffle)
 
 data PowerPlantDeck = PowerPlantDeck (List PowerPlant)
 
 instance showPowerPlantDeck :: Show PowerPlantDeck where
   show (PowerPlantDeck powerPlants) = show powerPlants
-
-toList :: PowerPlantDeck -> List PowerPlant
-toList (PowerPlantDeck ps) = ps  
 
 draw :: PowerPlantDeck -> PowerPlantDeck
 draw (PowerPlantDeck (_ : as)) = PowerPlantDeck as
