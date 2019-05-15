@@ -1,4 +1,4 @@
-module Test.Spec.PowerPlantMarketSpec(powerPlantMarketSpec) where
+module Powergrid.Spec.PowerPlantMarketSpec(powerPlantMarketSpec) where
 
 import Prelude
 

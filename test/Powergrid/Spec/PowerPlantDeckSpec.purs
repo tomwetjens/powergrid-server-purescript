@@ -1,4 +1,4 @@
-module Test.Spec.PowerPlantDeckSpec(powerPlantDeckSpec) where
+module Powergrid.Spec.PowerPlantDeckSpec(powerPlantDeckSpec) where
 
 import Prelude
 

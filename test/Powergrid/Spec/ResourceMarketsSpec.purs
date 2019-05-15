@@ -1,4 +1,4 @@
-module Test.Spec.ResourceMarketsSpec(resourceMarketsSpec) where
+module Powergrid.Spec.ResourceMarketsSpec(resourceMarketsSpec) where
 
 import Prelude
 
