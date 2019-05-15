@@ -1,5 +1,5 @@
 module Powergrid.PowerPlantMarket (
-  PowerPlantMarket, 
+  PowerPlantMarket(..), 
   newPowerPlantMarket, 
   takeActual, 
   toPeriod3, 

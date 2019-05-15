@@ -8,12 +8,12 @@ import Data.Maybe (Maybe(..))
 import Effect.Class (liftEffect)
 import Powergrid.PowerPlant (PowerPlant(..), cost)
 import Powergrid.PowerPlantDeck (PowerPlantDeck(..), defaultPowerPlants, onTop)
-import Powergrid.PowerPlantMarket (PowerPlantMarket, newPowerPlantMarket, removeHighestFuture, removeLowerOrEqual, removeLowestAndReplace, removeLowestWithoutReplacement, takeActual, toPeriod3)
+import Powergrid.PowerPlantMarket (PowerPlantMarket(..), newPowerPlantMarket, removeHighestFuture, removeLowerOrEqual, removeLowestAndReplace, removeLowestWithoutReplacement, takeActual, toPeriod3)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
 
 takeFirst :: PowerPlantMarket -> PowerPlantMarket
-takeFirst market = case market.actual of
+takeFirst market@(PowerPlantMarket m) = case m.actual of
   (first : _) -> takeActual market first
   Nil -> market
 
@@ -26,33 +26,33 @@ powerPlantMarketSpec = do
 
     describe "newPowerPlantMarket" do 
       it "actual and future" do 
-        let market = newPowerPlantMarket (PowerPlantDeck Nil)
-        (cost <$> market.actual) `shouldEqual` (3..6)
-        (cost <$> market.future) `shouldEqual` (7..10)
+        let (PowerPlantMarket result) = newPowerPlantMarket (PowerPlantDeck Nil)
+        (cost <$> result.actual) `shouldEqual` (3..6)
+        (cost <$> result.future) `shouldEqual` (7..10)
 
     describe "takeActual" do   
       let market = newPowerPlantMarket singletonDeck
 
       it "happy" do
-        let result = takeFirst market
+        let (PowerPlantMarket result) = takeFirst market
         (cost <$> result.actual) `shouldEqual` (4..7)
         (cost <$> result.future) `shouldEqual` fromFoldable [8, 9, 10, 13]
 
       it "not in actual" do
         case singletonDeck # onTop of
           Just other -> do
-            let result = takeActual market other
-            (cost <$> market.actual) `shouldEqual` (3..6)
-            (cost <$> market.future) `shouldEqual` (7..10)     
+            let (PowerPlantMarket result) = takeActual market other
+            (cost <$> result.actual) `shouldEqual` (3..6)
+            (cost <$> result.future) `shouldEqual` (7..10)     
           Nothing -> fail "deck empty"
 
       it "to period 3" do
-        result <- liftEffect $ toPeriod3 market
+        (PowerPlantMarket result) <- liftEffect $ toPeriod3 market
         (cost <$> result.actual) `shouldEqual` (3..10)
         (cost <$> result.future) `shouldEqual` Nil
 
       it "exhausted" do
-        let result = foldr (\i m -> takeFirst m) market (1..8)
+        let (PowerPlantMarket result) = foldr (\i m -> takeFirst m) market (1..8)
         (cost <$> result.actual) `shouldEqual` (singleton 13)
         (cost <$> result.future) `shouldEqual` Nil
 
@@ -60,7 +60,7 @@ powerPlantMarketSpec = do
       let market = newPowerPlantMarket singletonDeck
 
       it "happy" do
-        let result = removeLowerOrEqual 4 market
+        let (PowerPlantMarket result) = removeLowerOrEqual 4 market
         (cost <$> result.actual) `shouldEqual` (5..8)
         (cost <$> result.future) `shouldEqual` fromFoldable [9, 10, 13]       
 
@@ -68,7 +68,7 @@ powerPlantMarketSpec = do
       let market = newPowerPlantMarket singletonDeck
 
       it "happy" do
-        let result = removeHighestFuture market
+        let (PowerPlantMarket result) = removeHighestFuture market
         (cost <$> result.actual) `shouldEqual` (3..6)
         (cost <$> result.future) `shouldEqual` fromFoldable [7, 8, 9, 13]       
 
@@ -76,7 +76,7 @@ powerPlantMarketSpec = do
       let market = newPowerPlantMarket singletonDeck
 
       it "happy" do
-        let result = removeLowestAndReplace market
+        let (PowerPlantMarket result) = removeLowestAndReplace market
         (cost <$> result.actual) `shouldEqual` (4..7)
         (cost <$> result.future) `shouldEqual` fromFoldable [8, 9, 10, 13]           
 
@@ -84,6 +84,6 @@ powerPlantMarketSpec = do
       let market = newPowerPlantMarket singletonDeck
 
       it "happy" do
-        let result = removeLowestWithoutReplacement market
+        let (PowerPlantMarket result) = removeLowestWithoutReplacement market
         (cost <$> result.actual) `shouldEqual` (4..7)
         (cost <$> result.future) `shouldEqual` fromFoldable (8..10)               
