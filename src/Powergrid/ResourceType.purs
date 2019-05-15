@@ -1,4 +1,4 @@
-module ResourceType (ResourceType(..)) where
+module Powergrid.ResourceType (ResourceType(..)) where
 
 import Prelude
 

@@ -3,7 +3,7 @@ module Powergrid.Spec.ResourceMarketSpec(resourceMarketSpec) where
 import Prelude
 
 import Data.Maybe (Maybe(..))
-import ResourceMarket (available, capacity, cost, dec, inc, newDefaultResourceMarket, newUraniumResourceMarket)
+import Powergrid.ResourceMarket (available, capacity, cost, dec, inc, newDefaultResourceMarket, newUraniumResourceMarket)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 

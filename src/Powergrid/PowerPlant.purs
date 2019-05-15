@@ -1,8 +1,8 @@
-module PowerPlant where
+module Powergrid.PowerPlant where
 
 import Prelude
 import Data.Set (Set)
-import ResourceType (ResourceType)
+import Powergrid.ResourceType (ResourceType)
 
 data PowerPlant = PowerPlant { cost :: Int, requires :: Int, types :: Set ResourceType, powers :: Int }
 

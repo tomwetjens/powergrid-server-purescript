@@ -1,15 +1,14 @@
-module PowerPlantDeck where
+module Powergrid.PowerPlantDeck where
 
 import Prelude
 import Data.List (List(Nil), (:), filter, drop, length, snoc)
 import Data.Maybe (Maybe(..))
 import Data.Set (singleton, union)
 import Effect (Effect)
-
-import PowerPlant (PowerPlant(..))
-import ResourceType (ResourceType(..))
-import Shuffle (shuffle)
-import List ((++))
+import Powergrid.PowerPlant (PowerPlant(..))
+import Powergrid.ResourceType (ResourceType(..))
+import Powergrid.Util.Shuffle (shuffle)
+import Powergrid.Util.List ((++))
 
 data PowerPlantDeck = PowerPlantDeck (List PowerPlant)
 

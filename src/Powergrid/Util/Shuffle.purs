@@ -1,4 +1,4 @@
-module Shuffle(shuffle) where
+module Powergrid.Util.Shuffle(shuffle) where
 
 import Prelude
 import Data.Foldable (foldM)

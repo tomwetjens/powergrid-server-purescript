@@ -2,8 +2,8 @@ module Powergrid.Spec.ResourceMarketsSpec(resourceMarketsSpec) where
 
 import Prelude
 
-import ResourceType (ResourceType(..))
-import ResourceMarkets (newResourceMarkets, availableRT, capacityRT)
+import Powergrid.ResourceType (ResourceType(..))
+import Powergrid.ResourceMarkets (newResourceMarkets, availableRT, capacityRT)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 

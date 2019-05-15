@@ -1,4 +1,4 @@
-module ResourceMarkets (
+module Powergrid.ResourceMarkets (
   ResourceMarkets, 
   availableRT,
   capacityRT,
@@ -9,8 +9,8 @@ import Prelude
 
 import Data.Map (Map, unions, singleton, lookup)
 import Data.Maybe (maybe)
-import ResourceMarket (ResourceMarket, inc, newDefaultResourceMarket, newUraniumResourceMarket, available, capacity)
-import ResourceType (ResourceType(..))
+import Powergrid.ResourceMarket (ResourceMarket, inc, newDefaultResourceMarket, newUraniumResourceMarket, available, capacity)
+import Powergrid.ResourceType (ResourceType(..))
 
 data ResourceMarkets = ResourceMarkets (Map ResourceType ResourceMarket)
 

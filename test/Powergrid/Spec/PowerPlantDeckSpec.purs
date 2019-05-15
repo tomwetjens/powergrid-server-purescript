@@ -4,10 +4,10 @@ import Prelude
 
 import Data.Foldable (class Foldable, any)
 import Data.Maybe (Maybe(..))
-import PowerPlantDeck (newPowerPlantDeck, onTop, toList, remaining)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
-import PowerPlant (PowerPlant(..), cost)
+import Powergrid.PowerPlantDeck (newPowerPlantDeck, onTop, toList, remaining)
+import Powergrid.PowerPlant (PowerPlant(..), cost)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 

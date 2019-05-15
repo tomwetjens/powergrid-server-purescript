@@ -1,4 +1,4 @@
-module ResourceMarket (
+module Powergrid.ResourceMarket (
   ResourceMarket, 
   dec,
   inc,
@@ -14,7 +14,7 @@ import Data.Foldable (foldl, foldr, sum)
 import Data.List (List(..), (:), (..), fromFoldable, reverse)
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..), snd)
-import List ((++))
+import Powergrid.Util.List ((++))
 
 data Space = Space { capacity :: Int, cost :: Int, available :: Int }
 

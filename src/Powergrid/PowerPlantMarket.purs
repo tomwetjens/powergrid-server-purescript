@@ -1,4 +1,4 @@
-module PowerPlantMarket (
+module Powergrid.PowerPlantMarket (
   PowerPlantMarket, 
   newPowerPlantMarket, 
   takeActual, 
@@ -13,9 +13,9 @@ import Prelude
 import Data.List (List(..), (:), delete, drop, elem, filter, last, singleton, sort, take)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
-import List ((++))
-import PowerPlant (PowerPlant(..))
-import PowerPlantDeck (PowerPlantDeck(..), defaultPowerPlants, draw, putBack, shuffleDeck)
+import Powergrid.Util.List ((++))
+import Powergrid.PowerPlant (PowerPlant(..))
+import Powergrid.PowerPlantDeck (PowerPlantDeck(..), defaultPowerPlants, draw, putBack, shuffleDeck)
 
 type PowerPlantMarket = { 
     deck :: PowerPlantDeck, 

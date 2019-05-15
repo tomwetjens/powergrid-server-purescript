@@ -1,4 +1,4 @@
-module List where
+module Powergrid.Util.List where
 
 import Data.List (List, concat, singleton, (:))
 
