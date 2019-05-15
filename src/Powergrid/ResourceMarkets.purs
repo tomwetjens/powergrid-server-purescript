@@ -2,14 +2,17 @@ module Powergrid.ResourceMarkets (
   ResourceMarkets(..), 
   available,
   capacity,
+  inc,
+  dec,
+  cost,
   newResourceMarkets
 ) where
 
 import Prelude
 
-import Data.Map (Map, unions, singleton, lookup)
-import Data.Maybe (maybe)
-import Powergrid.ResourceMarket (ResourceMarket, inc, newDefaultResourceMarket, newUraniumResourceMarket, available, capacity) as ResourceMarket
+import Data.Map (Map, unions, singleton, lookup, insert)
+import Data.Maybe (Maybe, maybe)
+import Powergrid.ResourceMarket (ResourceMarket, inc, dec, cost, newDefaultResourceMarket, newUraniumResourceMarket, available, capacity) as ResourceMarket
 import Powergrid.ResourceType (ResourceType(..))
 
 data ResourceMarkets = ResourceMarkets (Map ResourceType ResourceMarket.ResourceMarket)
@@ -31,5 +34,17 @@ available t (ResourceMarkets m) = maybe 0 ResourceMarket.available (lookup t m)
 capacity :: ResourceType -> ResourceMarkets -> Int
 capacity t (ResourceMarkets m) = maybe 0 ResourceMarket.capacity (lookup t m)
 
--- incRT :: ResourceType -> Int -> ResourceMarkets -> ResourceMarkets
--- incRT t n (ResourceMarkets market) = ResourceMarkets (maybe market (\mm -> insert t mm market) ((inc n) <$> (lookup t market)) market)
+cost :: ResourceType -> ResourceMarkets -> Maybe Int
+cost t (ResourceMarkets m) = (lookup t m) >>=  (flip ResourceMarket.cost) 1
+
+inc :: Int -> ResourceType -> ResourceMarkets -> ResourceMarkets
+inc amount t = withMarket t $ ResourceMarket.inc amount
+
+dec :: Int -> ResourceType -> ResourceMarkets -> ResourceMarkets
+dec amount t = withMarket t $ ResourceMarket.dec amount
+  
+withMarket :: ResourceType -> (ResourceMarket.ResourceMarket -> ResourceMarket.ResourceMarket) -> ResourceMarkets -> ResourceMarkets
+withMarket t f markets@(ResourceMarkets m) = maybe markets ResourceMarkets updated
+  where
+    market = lookup t m
+    updated = flip (insert t) m <$> f <$> market
