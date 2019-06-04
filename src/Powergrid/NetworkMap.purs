@@ -5,14 +5,16 @@ module Powergrid.NetworkMap (
   Path(..),
   shortestPath,
   cost,
-  newNetworkMap
+  newNetworkMap,
+  restrict
 ) where
 
 import Prelude
 
-import Data.Graph (AdjacencyList, Graph, fromAdjacencyList, vertices, weight)
+import Data.Foldable (class Foldable, notElem)
+import Data.Graph (AdjacencyList, Graph, fromAdjacencyList, weight, filter)
 import Data.Graph (shortestPath) as Graph
-import Data.List (List(..), (:), singleton, filter, head)
+import Data.List (List(..), (:), singleton)
 import Data.Map (Map)
 import Data.Map (fromFoldableWith, toUnfoldable) as Map
 import Data.Maybe (Maybe, fromMaybe)
@@ -57,6 +59,9 @@ cost from to (NetworkMap graph) = cost' <$> path
     cost'' prev (cur : remaining) = (fromMaybe 0 (weight prev cur graph)) + (cost'' cur remaining)
     cost'' _ Nil = 0
     
+restrict :: forall f. Foldable f => f Area -> NetworkMap -> NetworkMap
+restrict areas (NetworkMap graph) = NetworkMap $ filter (\(City _ area) -> notElem area areas) graph
+
 inverseAdjacencyList :: forall a w. Ord a => AdjacencyList a w -> AdjacencyList a w
 inverseAdjacencyList as = Map.toUnfoldable grouped
   where

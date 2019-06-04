@@ -1,10 +1,108 @@
-module Powergrid.Map.Germany (germany) where
+module Powergrid.Map.Germany where
 
 import Prelude
 
 import Data.List (fromFoldable)
 import Data.Tuple (Tuple(..))
 import Powergrid.NetworkMap (Area(..), City(..), NetworkMap, newNetworkMap)
+
+ne :: Area
+ne = Area "ne"
+nw :: Area
+nw = Area "nw"
+e :: Area
+e = Area "e"
+w :: Area
+w = Area "w"
+sw :: Area
+sw = Area "sw"
+se :: Area
+se = Area "se"
+
+flensburg :: City
+flensburg = City "flensburg" nw
+kiel :: City
+kiel = City "kiel" nw
+hamburg :: City
+hamburg = City "hamburg" nw
+cukhaven :: City
+cukhaven = City "cukhaven" nw
+bremen :: City
+bremen = City "bremen" nw
+hannover :: City
+hannover = City "hannover" nw
+wilhelmshaven :: City
+wilhelmshaven = City "wilhelmshaven" nw
+osnabrueck :: City
+osnabrueck = City "osnabrueck" w
+muenster :: City
+muenster = City "muenster" w
+dortmund :: City
+dortmund = City "dortmund" w
+essen :: City
+essen = City "essen" w
+duisburg :: City
+duisburg = City "duisburg" w
+duesseldorf :: City
+duesseldorf = City "duesseldorf" w
+koeln :: City
+koeln = City "koeln" sw
+aachen :: City
+aachen = City "aachen" sw
+kassel :: City
+kassel = City "kassel" w
+frankfurtm :: City
+frankfurtm = City "frankfurtm" sw
+fulda :: City
+fulda = City "fulda" e
+wiesbaden :: City
+wiesbaden = City "wiesbaden" sw
+trier :: City
+trier = City "trier" sw
+mannheim :: City
+mannheim = City "mannheim" sw
+saarbruecken :: City
+saarbruecken = City "saarbruecken" sw
+stuttgart :: City
+stuttgart = City "stuttgart" se
+freiburg :: City
+freiburg = City "freiburg" se
+konstanz :: City
+konstanz = City "konstanz" se
+augsburg :: City
+augsburg = City "augsburg" se
+wuerzburg :: City
+wuerzburg = City "wuerzburg" e
+regensburg :: City
+regensburg = City "regensburg" se
+passau :: City
+passau = City "passau" se
+nuernberg :: City
+nuernberg = City "nuernberg" e
+erfurt :: City
+erfurt = City "erfurt" e
+dresden :: City
+dresden = City "dresden" e
+halle :: City
+halle = City "halle" e
+leipzig :: City
+leipzig = City "leipzig" e
+frankfurto :: City
+frankfurto = City "frankfurto" ne
+magdeburg :: City
+magdeburg = City "magdeburg" ne
+berlin :: City
+berlin = City "berlin" ne
+schwerin :: City
+schwerin = City "schwerin" ne
+lubeck :: City
+lubeck = City "lubeck" ne
+rostock :: City
+rostock = City "rostock" ne
+torgelow :: City
+torgelow = City "torgelow" ne
+muenchen :: City
+muenchen = City "muenchen" se  
 
 germany :: NetworkMap
 germany = newNetworkMap $ fromFoldable [
@@ -47,53 +145,3 @@ germany = newNetworkMap $ fromFoldable [
     Tuple rostock (fromFoldable [Tuple torgelow 19]),
     Tuple torgelow (fromFoldable [Tuple berlin 15])  
   ]
-  where
-    ne = Area "ne"
-    nw = Area "nw"
-    e = Area "e"
-    w = Area "w"
-    sw = Area "sw"
-    se = Area "se"
-
-    flensburg = City "flensburg" nw
-    kiel = City "kiel" nw
-    hamburg = City "hamburg" nw
-    cukhaven = City "cukhaven" nw
-    bremen = City "bremen" nw
-    hannover = City "hannover" nw
-    wilhelmshaven = City "wilhelmshaven" nw
-    osnabrueck = City "osnabrueck" w
-    muenster = City "muenster" w
-    dortmund = City "dortmund" w
-    essen = City "essen" w
-    duisburg = City "duisburg" w
-    duesseldorf = City "duesseldorf" w
-    koeln = City "koeln" sw
-    aachen = City "aachen" sw
-    kassel = City "kassel" w
-    frankfurtm = City "frankfurtm" sw
-    fulda = City "fulda" e
-    wiesbaden = City "wiesbaden" sw
-    trier = City "trier" sw
-    mannheim = City "mannheim" sw
-    saarbruecken = City "saarbruecken" sw
-    stuttgart = City "stuttgart" se
-    freiburg = City "freiburg" se
-    konstanz = City "konstanz" se
-    augsburg = City "augsburg" se
-    wuerzburg = City "wuerzburg" e
-    regensburg = City "regensburg" se
-    passau = City "passau" se
-    nuernberg = City "nuernberg" e
-    erfurt = City "erfurt" e
-    dresden = City "dresden" e
-    halle = City "halle" e
-    leipzig = City "leipzig" e
-    frankfurto = City "frankfurto" ne
-    magdeburg = City "magdeburg" ne
-    berlin = City "berlin" ne
-    schwerin = City "schwerin" ne
-    lubeck = City "lubeck" ne
-    rostock = City "rostock" ne
-    torgelow = City "torgelow" ne
-    muenchen = City "muenchen" se  
