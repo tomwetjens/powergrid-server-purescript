@@ -1,5 +1,6 @@
 module Powergrid.PowerPlantMarket (
   PowerPlantMarket(..), 
+  actual,
   newPowerPlantMarket, 
   takeActual, 
   toPeriod3, 
@@ -32,6 +33,9 @@ newPowerPlantMarket deck = PowerPlantMarket {
      actual: initial # take 4, 
      future: initial # drop 4 } where
   initial = defaultPowerPlants # filter (\(PowerPlant p) -> p.cost <= 10) # sort
+
+actual :: PowerPlantMarket -> List PowerPlant
+actual (PowerPlantMarket market) = market.actual
 
 -- | Takes a `PowerPlant` from the actual offering and replaces it with the top one from the `PowerPlantDeck`.
 takeActual :: PowerPlantMarket -> PowerPlant -> PowerPlantMarket

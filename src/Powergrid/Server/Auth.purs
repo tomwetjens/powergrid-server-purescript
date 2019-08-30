@@ -18,7 +18,8 @@ import Node.Encoding (Encoding(..))
 import Node.Express.Handler (Handler, HandlerM, next)
 import Node.Express.Request (getRequestHeader, getUserData, setUserData)
 import Node.Express.Response (setStatus, end)
-import Powergrid.Server.Handler (AppContext, throwIfNothing, throwIfNothingM, throwIfLeft, throwIfLeftM)
+import Powergrid.Server.Handler (AppContext)
+import Powergrid.Util.Error (throwIfNothing, throwIfNothingM, throwIfLeft, throwIfLeftM)
 import Powergrid.Server.User (User(..), findUserByUsername)
 
 logDebug :: forall m. MonadEffect m => String -> m Unit
