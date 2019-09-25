@@ -2,24 +2,26 @@ module Powergrid.Spec.GameSpec(gameSpec) where
 
 import Prelude
 
-import Control.Monad.Error.Class (class MonadThrow, catchError, throwError, try)
+import Control.Monad.Error.Class (class MonadThrow, try)
 import Data.Either (Either(..))
 import Data.Foldable (length)
 import Data.List (List(..), head, singleton)
-import Data.List.NonEmpty (NonEmptyList(..), fromFoldable)
+import Data.List.NonEmpty (NonEmptyList(..))
 import Data.Map (empty) as Map
 import Data.Maybe (Maybe(..))
 import Data.NonEmpty (NonEmpty(..))
-import Data.Set (empty) as Set
-import Effect.Aff (Aff)
+import Data.Set (empty, fromFoldable, singleton) as Set
 import Effect.Class (liftEffect)
-import Effect.Exception (Error, error, message)
-import Powergrid.Game (Auction(..), Game(..), Phase(..), startAuction, startAuctionPhase, startGame)
+import Effect.Exception (Error, message)
+import Node.Stream (onFinish)
+import Powergrid.Game (Auction(..), Game(..), Phase(..), startAuction, startGame)
 import Powergrid.Map.Germany (germany)
 import Powergrid.Player (Player(..), newPlayer)
+import Powergrid.PowerPlant (PowerPlant(..), cost)
 import Powergrid.PowerPlantDeck (PowerPlantDeck(..))
 import Powergrid.PowerPlantMarket (PowerPlantMarket(..), newPowerPlantMarket, actual)
 import Powergrid.ResourceMarkets (newResourceMarkets)
+import Powergrid.ResourceType (ResourceType(..))
 import Powergrid.Util.Error (throwIfNothing)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual, fail)
@@ -29,9 +31,9 @@ initialGame =
   let 
     alice = newPlayer "alice"
     bob = newPlayer "bob"
+    players = NonEmptyList (NonEmpty alice (singleton bob))
     powerPlantMarket = newPowerPlantMarket $ PowerPlantDeck Nil
   in do
-    players <- throwIfNothing "NoPlayers" $ fromFoldable [alice, bob]
     powerPlant <- throwIfNothing "no actual" $ head $ actual powerPlantMarket
     pure $ Game {
       map: germany,
@@ -103,16 +105,96 @@ gameSpec = do
           Right _ -> fail("error expected")
 
       it "should throw error if power plant not in actual" do
-        fail("TODO")    
+        initial <- initialGame
+        let (Game game) = initial
+        let (PowerPlantMarket powerPlantMarket) = game.powerPlantMarket
+        powerPlant <- throwIfNothing "no future" $ head powerPlantMarket.future
+        result <- try $ startAuction powerPlant (cost powerPlant) Nothing initial
+        case result of
+          Left err -> message err `shouldEqual` "PowerPlantNotInActual"
+          Right _ -> fail("error expected")
 
       it "should throw error if must replace but not replaces was given" do
-        fail("TODO")      
+        (Game initial) <- initialGame
+        let owned = Set.fromFoldable [ 
+            (PowerPlant { cost: 20, types: Set.singleton Coal, requires: 3, powers: 5 }),
+            (PowerPlant { cost: 25, types: Set.singleton Coal, requires: 2, powers: 5 }),
+            (PowerPlant { cost: 31, types: Set.singleton Coal, requires: 3, powers: 6 }),
+            (PowerPlant { cost: 36, types: Set.singleton Coal, requires: 3, powers: 7 })
+          ]
+        let alice = Player { name: "alice", balance: 50, powerPlants: owned, resources: Map.empty }
+        let bob = Player { name: "bob", balance: 50, powerPlants: Set.empty, resources: Map.empty }
+        let players = NonEmptyList (NonEmpty alice (singleton bob))
+        let wrong = Game $ initial { players = players, phase = AuctionPhase { auction: Nothing, auctioningPlayers: players, closedAuctions: Set.empty } }
+        let (PowerPlantMarket powerPlantMarket) = initial.powerPlantMarket
+        powerPlant <- throwIfNothing "no actual" $ head powerPlantMarket.actual
+        result <- try $ startAuction powerPlant 3 Nothing wrong
+        case result of
+          Left err -> message err `shouldEqual` "MustReplacePowerPlant"
+          Right _ -> fail("error expected")
 
-      it "should throw error if replaces is not of player" do
-        fail("TODO")      
+      it "should throw error if replaces is not owned by player" do
+        (Game initial) <- initialGame
+        let owned = Set.fromFoldable [ 
+            (PowerPlant { cost: 20, types: Set.singleton Coal, requires: 3, powers: 5 }),
+            (PowerPlant { cost: 25, types: Set.singleton Coal, requires: 2, powers: 5 }),
+            (PowerPlant { cost: 31, types: Set.singleton Coal, requires: 3, powers: 6 }),
+            (PowerPlant { cost: 36, types: Set.singleton Coal, requires: 3, powers: 7 })
+          ]
+        let alice = Player { name: "alice", balance: 50, powerPlants: owned, resources: Map.empty }
+        let bob = Player { name: "bob", balance: 50, powerPlants: Set.empty, resources: Map.empty }
+        let players = NonEmptyList (NonEmpty alice (singleton bob))
+        let wrong = Game $ initial { players = players, phase = AuctionPhase { auction: Nothing, auctioningPlayers: players, closedAuctions: Set.empty } }
+        let (PowerPlantMarket powerPlantMarket) = initial.powerPlantMarket
+        powerPlant <- throwIfNothing "no actual" $ head powerPlantMarket.actual
+        result <- try $ startAuction powerPlant 3 (Just powerPlant) wrong
+        case result of
+          Left err -> message err `shouldEqual` "NotPlayerPowerPlant"
+          Right _ -> fail("error expected")
 
       it "should throw error if not enough balance" do
-       fail("TODO")        
+        (Game initial) <- initialGame
+        let alice = Player { name: "alice", balance: 2, powerPlants: Set.empty, resources: Map.empty }
+        let bob = Player { name: "bob", balance: 50, powerPlants: Set.empty, resources: Map.empty }
+        let players = NonEmptyList (NonEmpty alice (singleton bob))
+        let wrong = Game $ initial { players = players, phase = AuctionPhase { auction: Nothing, auctioningPlayers: players, closedAuctions: Set.empty } }
+        let (PowerPlantMarket powerPlantMarket) = initial.powerPlantMarket
+        powerPlant <- throwIfNothing "no actual" $ head powerPlantMarket.actual
+        result <- try $ startAuction powerPlant 3 Nothing wrong
+        case result of
+          Left err -> message err `shouldEqual` "NotEnoughBalance"
+          Right _ -> fail("error expected")
 
       it "should throw error if bid too low" do
-       fail("TODO")          
+        initial <- initialGame
+        let (Game game) = initial
+        let (PowerPlantMarket powerPlantMarket) = game.powerPlantMarket
+        powerPlant <- throwIfNothing "no actual" $ head powerPlantMarket.actual
+        result <- try $ startAuction powerPlant 2 Nothing initial
+        case result of
+          Left err -> message err `shouldEqual` "BidTooLow"
+          Right _ -> fail("error expected")
+
+      it "should start auction with replacement" do
+        (Game initial) <- initialGame
+        let replaces = (PowerPlant { cost: 20, types: Set.singleton Coal, requires: 3, powers: 5 })
+        let owned = Set.fromFoldable [ 
+            replaces,
+            (PowerPlant { cost: 25, types: Set.singleton Coal, requires: 2, powers: 5 }),
+            (PowerPlant { cost: 31, types: Set.singleton Coal, requires: 3, powers: 6 }),
+            (PowerPlant { cost: 36, types: Set.singleton Coal, requires: 3, powers: 7 })
+          ]
+        let alice = Player { name: "alice", balance: 50, powerPlants: owned, resources: Map.empty }
+        let bob = Player { name: "bob", balance: 50, powerPlants: Set.empty, resources: Map.empty }
+        let players = NonEmptyList (NonEmpty alice (singleton bob))
+        let game = Game $ initial { players = players, phase = AuctionPhase { auction: Nothing, auctioningPlayers: players, closedAuctions: Set.empty } }
+        let (PowerPlantMarket powerPlantMarket) = initial.powerPlantMarket
+        powerPlant <- throwIfNothing "no actual" $ head powerPlantMarket.actual
+        (Game result) <- startAuction powerPlant 3 (Just replaces) game
+        case result.phase of
+          (AuctionPhase auctionPhase) ->
+            case auctionPhase.auction of
+              Just (Auction auction) -> do
+                auction.replaces `shouldEqual` Just replaces
+              Nothing -> fail("no auction")  
+          phase -> fail("unexpected phase: " <> show phase)  
