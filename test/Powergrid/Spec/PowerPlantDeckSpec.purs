@@ -46,6 +46,6 @@ powerPlantDeckSpec = do
         deck <- liftEffect $ newPowerPlantDeck 5
         (remaining deck) `shouldEqual` 34
 
-      it "4 players" do
+      it "6 players" do
         deck <- liftEffect $ newPowerPlantDeck 6
         (remaining deck) `shouldEqual` 34     

@@ -4,11 +4,13 @@ import Prelude
 
 import Control.Monad.Error.Class (class MonadThrow, throwError)
 import Data.Either (Either(..))
-import Data.Foldable (length, elem)
+import Data.Foldable (elem, foldM, foldr, foldl, length)
+import Data.Function.Memoize (memoize)
+import Data.Lazy (Lazy, defer)
 import Data.List (List(..), (:), fromFoldable, snoc)
-import Data.List.NonEmpty (NonEmptyList(..), fromList, head)
+import Data.List.NonEmpty (NonEmptyList(..), fromList, head, sortBy)
 import Data.Map (Map)
-import Data.Map (empty) as Map
+import Data.Map (empty, alter, values) as Map
 import Data.Maybe (Maybe(..))
 import Data.NonEmpty (NonEmpty(..), (:|), fromNonEmpty)
 import Data.Set (Set)
@@ -16,7 +18,7 @@ import Data.Set (empty, member) as Set
 import Data.Traversable (class Traversable)
 import Effect (Effect)
 import Effect.Exception (Error, error)
-import Powergrid.NetworkMap (NetworkMap)
+import Powergrid.NetworkMap (NetworkMap, City)
 import Powergrid.Player (Player(..), newPlayer)
 import Powergrid.PowerPlant (PowerPlant, cost)
 import Powergrid.PowerPlantDeck (newPowerPlantDeck)
@@ -81,6 +83,7 @@ instance showPhase :: Show Phase where
 data Game
   = Game
     { map :: NetworkMap
+    , cities :: Map City (Set String)  
     , step :: Int
     , round :: Int
     , players :: NonEmptyList Player
@@ -98,6 +101,7 @@ startGame map names = do
   pure
     $ Game
         { map
+        , cities: Map.empty  
         , players
         , step: 1
         , round: 1
@@ -157,3 +161,27 @@ gameEndsOnNumberOfCities 2 = 21
 gameEndsOnNumberOfCities 5 = 15
 gameEndsOnNumberOfCities 6 = 14
 gameEndsOnNumberOfCities _ = 17
+
+
+-- Redetermines the player order
+-- The player with most cities goes first, then the player with the highest power plant.
+redeterminePlayerOrder :: Game -> NonEmptyList Player
+redeterminePlayerOrder (Game game) = sortBy cmp game.players
+  where
+    cmp :: Player -> Player -> Ordering
+    cmp (Player a) (Player b) = EQ
+      where
+        numberOfCitiesPerPlayerMemoized = memoize numberOfCitiesPerPlayerFn
+        numberOfCitiesPerPlayerFn :: Unit -> Map String Int
+        numberOfCitiesPerPlayerFn _ = numberOfCitiesPerPlayer
+        numberOfCitiesPerPlayerLazy :: Lazy (Map String Int)
+        numberOfCitiesPerPlayerLazy = defer (\_ -> numberOfCitiesPerPlayer)
+        numberOfCitiesPerPlayer :: Map String Int
+        numberOfCitiesPerPlayer = foldr countPlayers Map.empty game.cities
+        countPlayers :: Set String -> Map String Int -> Map String Int 
+        countPlayers players counts = foldr countPlayer counts players
+        countPlayer :: String -> Map String Int -> Map String Int
+        countPlayer player counts = Map.alter incCount player counts
+        incCount :: Maybe Int -> Maybe Int
+        incCount (Just n) = Just (n + 1)
+        incCount Nothing = Just 1     

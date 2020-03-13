@@ -15,8 +15,8 @@ import Powergrid.Spec.ResourceMarketsSpec (resourceMarketsSpec)
 main :: Effect Unit
 main = run [consoleReporter] do
   gameSpec
-  networkMapSpec
-  powerPlantDeckSpec
-  powerPlantMarketSpec
-  resourceMarketSpec
-  resourceMarketsSpec
+  -- networkMapSpec
+  -- powerPlantDeckSpec
+  -- powerPlantMarketSpec
+  -- resourceMarketSpec
+  -- resourceMarketsSpec

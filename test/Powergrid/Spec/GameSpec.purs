@@ -36,6 +36,7 @@ initialGame =
   in do
     powerPlant <- throwIfNothing "no actual" $ head $ actual powerPlantMarket
     pure $ Game {
+      cities: Map.empty,
       map: germany,
       players,
       step: 1,
